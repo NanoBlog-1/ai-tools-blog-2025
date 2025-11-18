@@ -1,88 +1,51 @@
 <script>
-    // PHANTOM WALLET CHECK
     function getProvider() {
-        if ('solana' in window && window.solana?.isPhantom) {
-            return window.solana;
-        }
-        alert('Install Phantom Wallet!');
-        throw new Error('No wallet');
+        if ('solana' in window && window.solana?.isPhantom) return window.solana;
+        alert('Install Phantom!');
+        throw 'No wallet';
     }
 
     const payButton = document.getElementById('payButton');
     const fullContent = document.getElementById('full-content');
-
-    // 3 WORKING RPCs
-    const RPC_LIST = [
-        'https://solana-devnet.rpc.extrnode.com',
-        'https://devnet.solana.fm/api/v1',
-        'https://api.devnet.solana.com'
-    ];
-
     let connection = null;
 
-    // CONNECT TO SOLANA
-    async function connectRPC() {
-        for (const url of RPC_LIST) {
-            try {
-                const conn = new solanaWeb3.Connection(url);
-                await conn.getVersion();
-                connection = conn;
-                console.log('Connected to:', url);
-                return true;
-            } catch (e) {
-                console.log('Failed:', url);
-            }
-        }
-        return false;
-    }
+    const RPC = 'https://solana-devnet.genesysgo.net';
 
     payButton.addEventListener('click', async () => {
         try {
-            // 1. Connect wallet
             const provider = getProvider();
-            if (!provider.isConnected) {
-                payButton.textContent = 'Connect Wallet...';
-                await provider.connect();
-            }
+            if (!provider.isConnected) await provider.connect();
 
-            // 2. Connect RPC
             if (!connection) {
-                payButton.textContent = 'Connecting to Solana...';
-                payButton.disabled = true;
-                const success = await connectRPC();
-                payButton.disabled = false;
+                payButton.textContent = 'Connecting...';
+                connection = new solanaWeb3.Connection(RPC);
+                await connection.getVersion();
+                console.log('RPC OK');
                 payButton.textContent = 'Unlock Full Article - 0.002 SOL';
-                if (!success) throw new Error('No network');
             }
 
-            // 3. YOUR WALLET ADDRESS (CHANGE THIS!)
-            const recipient = new solanaWeb3.PublicKey('Bw2M5DqDsHsNZhGbmyj8WQ9iX55Gk8RPrmxpQj35aUxM'); // TEST WALLET
-
-            const amount = 0.002 * solanaWeb3.LAMPORTS_PER_SOL;
+            // CHANGE THIS
+            const recipient = new solanaWeb3.PublicKey('Bw2M5DqDsHsNZhGbmyj8WQ9iX55Gk8RPrmxpQj35aUxM');
 
             const { blockhash } = await connection.getLatestBlockhash();
-            const tx = new solanaWeb3.Transaction().add(
-                solanaWeb3.SystemProgram.transfer({
-                    fromPubkey: provider.publicKey,
-                    toPubkey: recipient,
-                    lamports: amount,
-                })
-            );
-            tx.recentBlockhash = blockhash;
-            tx.feePayer = provider.publicKey;
+            const tx = new solanaWeb3.Transaction({
+                recentBlockhash: blockhash,
+                feePayer: provider.publicKey
+            }).add(solanaWeb3.SystemProgram.transfer({
+                fromPubkey: provider.publicKey,
+                toPubkey: recipient,
+                lamports: 0.002 * solanaWeb3.LAMPORTS_PER_SOL
+            }));
 
             const { signature } = await provider.signAndSendTransaction(tx);
             await connection.confirmTransaction(signature);
 
             fullContent.style.display = 'block';
             payButton.style.display = 'none';
+            alert('Paid!');
 
         } catch (err) {
-            console.error(err);
-            alert('Error: ' + (err.message || 'Try mobile data'));
+            alert('Error: ' + err.message);
         }
     });
-
-    // Auto-connect RPC on load
-    window.addEventListener('load', connectRPC);
 </script>
