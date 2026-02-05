@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Premium — AI Keyword Tools</title>
+	<style>
+		body { font-family: system-ui, sans-serif; max-width: 640px; margin: 2rem auto; padding: 0 1rem; background: #0d0d0f; color: #e4e4e7; line-height: 1.6; }
+		h1 { color: #9945ff; font-size: 1.5rem; margin-bottom: 0.5rem; }
+		h2 { font-size: 1.1rem; color: #e4e4e7; margin-top: 1.5rem; margin-bottom: 0.5rem; }
+		p { color: #71717a; margin-bottom: 1rem; }
+		a { color: #9945ff; text-decoration: none; }
+		a:hover { text-decoration: underline; }
+		.badge { display: inline-block; background: rgba(153,69,255,0.2); color: #9945ff; font-size: 0.75rem; padding: 0.25rem 0.5rem; border-radius: 4px; margin-bottom: 0.5rem; }
+		ul.resources { list-style: none; padding-left: 0; }
+		ul.resources li { margin-bottom: 0.5rem; color: #71717a; }
+		ul.resources a { color: #9945ff; }
+		.back { margin-top: 2rem; font-size: 0.9rem; }
+	</style>
+</head>
+<body>
+	<span class="badge">Unlocked</span>
+	<h1>Premium: AI Keyword Tools</h1>
+	<p>This guide walks you through a repeatable keyword process: cluster keywords by intent with AI, analyze SERPs for each cluster, then score competition and prioritize what to write. Use the templates and prompts below in your own tools (ChatGPT, Claude, Notion, Sheets).</p>
+	<h2>AI prompt packs (updates)</h2>
+	<p>New packs added for subscribers. Click to open and copy prompts into ChatGPT, Claude, or Gemini.</p>
+	<div id="packs-list" class="packs-list"></div>
+	<script>
+	(function() {
+		fetch('/premium/packs/index.json').then(function(r) { return r.ok ? r.json() : null; }).then(function(data) {
+			var list = document.getElementById('packs-list');
+			if (!list || !data || !data.packs || !data.packs.length) return;
+			var ul = document.createElement('ul');
+			ul.className = 'resources';
+			data.packs.forEach(function(pack) {
+				var li = document.createElement('li');
+				var a = document.createElement('a');
+				a.href = '/premium/packs/' + pack.slug + '.md';
+				a.textContent = pack.title + ' (' + pack.date + ')';
+				a.target = '_blank';
+				a.rel = 'noopener noreferrer';
+				li.appendChild(a);
+				if (pack.description) { li.appendChild(document.createTextNode(' — ' + pack.description)); }
+				ul.appendChild(li);
+			});
+			list.appendChild(ul);
+		});
+	})();
+	</script>
+
+	<h2>Core resources</h2>
+	<p>Save these links; they’re the same ones referenced in the methodology.</p>
+	<ul class="resources">
+		<li><a href="https://landmarklabs.notion.site/Keyword-Research-Template-57bcd74149f44c98af2b695120219200" target="_blank" rel="noopener noreferrer">Keyword clustering template (Notion)</a> — Landmark Labs: sort, rank &amp; track keywords</li>
+		<li><a href="https://docsbot.ai/prompts/writing/serp-analysis-and-content-creation" target="_blank" rel="noopener noreferrer">SERP analysis &amp; content creation prompt</a> — DocsBot: for ChatGPT, Claude, Gemini</li>
+		<li><a href="https://docsbot.ai/prompts/research/keyword-research-prompt" target="_blank" rel="noopener noreferrer">Keyword research prompt</a> — DocsBot: high-volume, low-competition keywords</li>
+		<li><a href="https://docs.google.com/spreadsheets/d/1ZbuxXHhVbPciTTdG-9wsZKhi4XsBBsU5AcgHEiks4hw/template/preview" target="_blank" rel="noopener noreferrer">Keyword mapping template (Google Sheet)</a> — SEMrush: pillar pages, subpages, target URLs</li>
+	</ul>
+	<p class="back"><a href="/">← Back to home</a></p>
+	<p class="back" style="margin-top:0.5rem; font-size:0.8rem; color:#71717a;"><a href="/privacy">Privacy &amp; security</a> · <a href="/premium/?clear=1">Clear access (testing)</a></p>
+</body>
+</html>

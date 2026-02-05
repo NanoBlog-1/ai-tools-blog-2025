@@ -1,0 +1,10 @@
+{
+  "name": "nano-site-1",
+  "private": true,
+  "scripts": {
+    "deploy": "wrangler pages deploy . --project-name=best-ai-tools-2025"
+  },
+  "devDependencies": {
+    "wrangler": "^4"
+  }
+}
