@@ -1,52 +1,886 @@
-<script>
-    function getProvider() {
-        if ('solana' in window && window.solana?.isPhantom) return window.solana;
-        alert('Install Phantom!');
-        throw 'No wallet';
-    }
-
-    const payButton = document.getElementById('payButton');
-    const fullContent = document.getElementById('full-content');
-    let connection = null;
-
-    const RPC = 'https://solana-devnet.genesysgo.net';
-
-    payButton.addEventListener('click', async () => {
-        try {
-            const provider = getProvider();
-            if (!provider.isConnected) await provider.connect();
-
-            if (!connection) {
-                payButton.textContent = 'Connecting...';
-                connection = new solanaWeb3.Connection(RPC);
-                await connection.getVersion();
-                console.log('RPC OK');
-                payButton.textContent = 'Unlock Full Article - 0.002 SOL';
-            }
-
-            // CHANGE THIS
-            const recipient = new solanaWeb3.PublicKey('Bw2M5DqDsHsNZhGbmyj8WQ9iX55Gk8RPrmxpQj35aUxM');
-
-            const { blockhash } = await connection.getLatestBlockhash();
-            const tx = new solanaWeb3.Transaction({
-                recentBlockhash: blockhash,
-                feePayer: provider.publicKey
-            }).add(solanaWeb3.SystemProgram.transfer({
-                fromPubkey: provider.publicKey,
-                toPubkey: recipient,
-                lamports: 0.002 * solanaWeb3.LAMPORTS_PER_SOL
-            }));
-
-            const { signature } = await provider.signAndSendTransaction(tx);
-            await connection.confirmTransaction(signature);
-
-            fullContent.style.display = 'block';
-            payButton.style.display = 'none';
-            alert('Paid!');
-alert('Paid! ');
-            alert('Paid!  ');
-        } catch (err) {
-            alert('Error: ' + err.message);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="google-adsense-account" content="ca-pub-1796834252056447">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Driven SEO That Ranks — E‑commerce &amp; Content Marketing</title>
+    <meta name="description" content="Everyone’s using AI to create content. The edge: keyword strategy that works worldwide. E‑commerce product pages, blog content, category SEO—one workflow, one payment. Templates + prompts for Notion, Sheets, ChatGPT &amp; Claude.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+    <!-- Google AdSense: verification + ad script (one script only) -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1796834252056447" crossorigin="anonymous"></script>
+    <style>
+        :root {
+            --bg: #f8f9fa;
+            --bg-mid: #f1f3f5;
+            --bg-end: #e9ecef;
+            --surface: rgba(255, 255, 255, 0.06);
+            --surface-border: rgba(255, 255, 255, 0.1);
+            --border: rgba(0, 0, 0, 0.08);
+            --text: #212529;
+            --muted: #6c757d;
+            --sol-cta: #22c55e;
+            --sol-cta-hover: #16a34a;
+            --fiat-cta: #3B82F6;
+            --fiat-cta-hover: #2563eb;
+            --electric: #0ea5e9;
+            --accent: #3B82F6;
+            /* Dark accent boxes */
+            --accent-bg: #232325;
+            --accent-bg-strong: #1C1C1E;
+            --accent-text: #ffffff;
+            --accent-muted: #b0b0b0;
+            --accent-border: rgba(255, 255, 255, 0.12);
         }
-    });
-</script>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            position: relative;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: linear-gradient(180deg, var(--bg) 0%, var(--bg-mid) 50%, var(--bg-end) 100%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .page-wrap {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-wrap: wrap;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+            gap: 0;
+        }
+        .sidebar {
+            display: none;
+            flex: 0 0 20%;
+            max-width: 200px;
+            padding: 24px 12px;
+            position: sticky;
+            top: 24px;
+            align-self: flex-start;
+        }
+        .ad-slot {
+            min-height: 400px;
+            background: rgba(0, 0, 0, 0.04);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--muted);
+            font-size: 0.7rem;
+            text-align: center;
+            padding: 12px;
+            line-height: 1.4;
+        }
+        .ad-slot span { display: block; margin-bottom: 0.25rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
+        @media (min-width: 1025px) {
+            .page-wrap { max-width: 1280px; padding: 24px 32px; }
+            .sidebar { display: block; }
+        }
+        .container {
+            position: relative;
+            flex: 1 1 100%;
+            min-width: 0;
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 24px 20px;
+        }
+        @media (min-width: 768px) {
+            .container { padding: 32px 40px; }
+        }
+        header {
+            text-align: center;
+            margin-bottom: 28px;
+            padding: 0 0 24px;
+        }
+        header h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(1.75rem, 5vw, 2.5rem);
+            font-weight: 700;
+            letter-spacing: -0.04em;
+            line-height: 1.2;
+            margin-bottom: 0.75rem;
+            color: var(--text);
+        }
+        header p { color: var(--muted); font-size: 1rem; line-height: 1.6; max-width: 30em; margin-left: auto; margin-right: auto; }
+        .hero-sub { font-size: 1.125rem; color: var(--electric); font-weight: 600; line-height: 1.5; margin-top: 0.35rem; letter-spacing: -0.01em; }
+        .hero-banner {
+            width: 100%;
+            max-width: 100%;
+            margin-bottom: 28px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--surface-border);
+        }
+        .hero-banner img {
+            max-width: 100%;
+            width: 100%;
+            height: auto;
+            max-height: 280px;
+            object-fit: cover;
+            display: block;
+        }
+        @media (max-width: 767px) {
+            .hero-banner img { max-height: 240px; }
+        }
+        @media (min-width: 768px) {
+            .hero-banner { margin-bottom: 32px; }
+            .hero-banner img { max-height: 320px; }
+        }
+        .tool-screenshot {
+            max-width: 100%;
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 1px solid var(--surface-border);
+        }
+        .tool-screenshots {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin: 28px 0;
+        }
+        .tool-screenshots figure { margin: 0; border-radius: 10px; overflow: hidden; background: rgba(0,0,0,0.2); border: 1px solid var(--accent-border); display: flex; flex-direction: column; }
+        .tool-screenshots figure img { width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; display: block; }
+        .teaser .tool-screenshots figcaption { color: var(--accent-muted); }
+        .tool-screenshots figcaption { font-size: 0.875rem; line-height: 1.5; color: var(--muted); padding: 0.5rem 0.75rem; }
+        @media (min-width: 600px) {
+            .tool-screenshots { grid-template-columns: repeat(2, 1fr); gap: 24px; margin: 32px 0; }
+        }
+        .teaser {
+            background: var(--accent-bg);
+            border: 1px solid var(--accent-border);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 28px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+        }
+        @media (min-width: 768px) {
+            .teaser { padding: 32px 40px; margin-bottom: 32px; }
+        }
+        .teaser h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            line-height: 1.4;
+            margin-bottom: 1rem;
+            color: var(--accent-text);
+        }
+        .teaser p {
+            color: var(--accent-muted);
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        .teaser ul {
+            list-style: none;
+            margin-bottom: 1.5rem;
+        }
+        .teaser li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: var(--accent-muted);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+        .teaser li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.75rem;
+            width: 6px;
+            height: 6px;
+            background: var(--fiat-cta);
+            border-radius: 50%;
+        }
+        .pay-cta {
+            text-align: center;
+            padding: 28px 0;
+            color: var(--accent-text);
+        }
+        @media (min-width: 768px) {
+            .pay-cta { padding: 32px 0; }
+        }
+        .pay-cta p {
+            color: var(--accent-muted);
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        #payButton {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            min-height: 48px;
+            min-width: 160px;
+            padding: 18px 32px;
+            font-size: 1.0625rem;
+            font-weight: 600;
+            font-family: inherit;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.15s ease;
+            background: var(--sol-cta);
+            color: #FFFFFF;
+            border: none;
+        }
+        #payButton:hover {
+            background: var(--sol-cta-hover);
+            transform: translateY(-1px);
+        }
+        #payButton:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+        .pay-fiat { background: var(--fiat-cta) !important; color: #FFFFFF !important; transition: background 0.2s ease, transform 0.15s ease; }
+        .pay-fiat:hover { background: var(--fiat-cta-hover) !important; transform: translateY(-1px); }
+        .pay-cta__headline {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--accent-text);
+            margin-bottom: 0.75rem;
+            line-height: 1.4;
+        }
+        .pay-cta__included {
+            list-style: none;
+            margin: 0 0 1.25rem 0;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.5rem 1.25rem;
+            font-size: 0.9375rem;
+            color: var(--accent-muted);
+        }
+        .pay-cta__included li { display: flex; align-items: center; gap: 0.35rem; }
+        .pay-cta__included li::before { content: '✓'; color: var(--sol-cta); font-weight: 700; }
+        .pay-cta__buttons { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 1rem; margin-top: 1.25rem; }
+        .pay-cta__primary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 52px;
+            min-width: 200px;
+            padding: 18px 36px;
+            font-size: 1.125rem;
+            font-weight: 600;
+            border-radius: 12px;
+            text-decoration: none;
+            transition: background 0.2s ease, transform 0.15s ease;
+            font-family: inherit;
+            border: none;
+            cursor: pointer;
+        }
+        .pay-cta__primary.pay-fiat { background: var(--fiat-cta) !important; color: #fff !important; }
+        .pay-cta__primary.pay-fiat:hover { background: var(--fiat-cta-hover) !important; transform: translateY(-1px); }
+        .article-teaser {
+            text-align: center;
+            padding: 28px 24px;
+            margin: 28px 0 0;
+            background: var(--accent-bg-strong);
+            border: 1px solid var(--accent-border);
+            border-radius: 16px;
+        }
+        .article-teaser__headline {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--accent-text);
+            margin-bottom: 0.75rem;
+            line-height: 1.3;
+        }
+        .article-teaser__text {
+            color: var(--accent-muted);
+            font-size: 1.0625rem;
+            line-height: 1.6;
+            max-width: 32em;
+            margin: 0 auto;
+        }
+        .article-teaser__cta-line {
+            margin-top: 1.25rem;
+            font-size: 0.9375rem;
+            color: var(--electric);
+            font-weight: 600;
+        }
+        @media (min-width: 768px) {
+            .article-teaser { padding: 36px 40px; margin: 32px 0 0; }
+            .article-teaser__headline { font-size: 1.5rem; }
+        }
+        #full-content {
+            display: none;
+            background: var(--accent-bg);
+            border: 1px solid var(--accent-border);
+            border-radius: 16px;
+            padding: 24px;
+            margin-top: 28px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+        }
+        @media (min-width: 768px) {
+            #full-content { padding: 32px 40px; margin-top: 32px; }
+        }
+        #full-content h2 { font-family: 'Space Grotesk', sans-serif; font-size: 1.35rem; font-weight: 700; line-height: 1.4; margin-bottom: 1rem; color: var(--accent-text); }
+        #full-content p { color: var(--accent-muted); margin-bottom: 1rem; font-size: 1rem; line-height: 1.6; }
+        .badge {
+            font-family: 'Space Grotesk', sans-serif;
+            display: inline-block;
+            background: rgba(33, 150, 243, 0.2);
+            color: var(--electric);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            padding: 0.3rem 0.7rem;
+            border-radius: 6px;
+            margin-bottom: 0.75rem;
+            border: 1px solid rgba(33, 150, 243, 0.3);
+        }
+        .hero-visual {
+            width: 100%;
+            margin-bottom: 24px;
+            padding: 20px;
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid var(--surface-border);
+        }
+        @media (min-width: 768px) {
+            .hero-visual { margin-bottom: 28px; padding: 24px; }
+        }
+        .hero-visual svg { width: 100%; height: auto; display: block; }
+        .hero-img {
+            width: 100%;
+            max-height: 200px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--surface-border);
+            opacity: 0.9;
+        }
+        .teaser .hero-img { margin-bottom: 1.5rem; }
+        .flow-strip {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.5rem 1.5rem;
+            margin: 24px 0;
+            padding: 16px 20px;
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--accent-border);
+        }
+        .flow-strip span {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.8125rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: var(--accent-muted);
+        }
+        .flow-strip span strong { color: var(--electric); font-weight: 700; }
+        .flow-strip .arrow { color: var(--fiat-cta); opacity: 0.8; font-weight: 400; }
+        .what-you-get-imgs {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+            margin: 24px 0;
+        }
+        @media (min-width: 560px) {
+            .what-you-get-imgs { grid-template-columns: repeat(2, 1fr); gap: 20px; margin: 28px 0; }
+        }
+        @media (min-width: 900px) {
+            .what-you-get-imgs { grid-template-columns: repeat(4, 1fr); }
+        }
+        .what-you-get-imgs figure {
+            margin: 0;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--accent-border);
+            background: rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            padding: 12px;
+        }
+        .what-you-get-imgs figure img {
+            width: 100%;
+            min-width: 200px;
+            height: 160px;
+            object-fit: cover;
+            display: block;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+        .teaser .what-you-get-imgs figcaption { color: var(--accent-muted); }
+        .what-you-get-imgs figcaption {
+            font-size: 0.875rem;
+            line-height: 1.5;
+            color: var(--muted);
+            padding: 0.5rem 0.75rem 0.75rem;
+            text-align: center;
+        }
+        @media (max-width: 559px) {
+            .what-you-get-imgs img { height: 180px; }
+        }
+        .full-content-img {
+            max-width: 100%;
+            width: 100%;
+            height: auto;
+            max-height: 320px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin: 1rem 0;
+            border: 1px solid var(--surface-border);
+        }
+        .page-footer {
+            margin-top: 40px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--muted);
+        }
+        .page-footer a { color: var(--electric); text-decoration: none; }
+        .page-footer a:hover { text-decoration: underline; }
+        .sticky-unlock-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px 20px;
+            padding: 12px 20px;
+            background: var(--accent-bg-strong);
+            border-top: 1px solid var(--accent-border);
+            box-shadow: 0 -2px 16px rgba(0, 0, 0, 0.2);
+        }
+        .sticky-unlock-bar__label {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.9375rem;
+            font-weight: 700;
+            color: var(--accent-text);
+        }
+        .sticky-unlock-bar__buttons {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .sticky-unlock-bar .sticky-unlock-bar__btn--fiat {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 48px;
+            min-width: 160px;
+            padding: 14px 28px;
+            font-size: 1.0625rem;
+            font-weight: 600;
+            border-radius: 10px;
+            background: var(--fiat-cta);
+            color: #fff;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            transition: background 0.2s ease, transform 0.15s ease;
+        }
+        .sticky-unlock-bar .sticky-unlock-bar__btn--fiat:hover { background: var(--fiat-cta-hover); transform: translateY(-1px); }
+        .sticky-unlock-bar .sticky-unlock-bar__btn--sol {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 48px;
+            min-width: 160px;
+            padding: 14px 28px;
+            font-size: 1.0625rem;
+            font-weight: 600;
+            border-radius: 10px;
+            background: var(--sol-cta);
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            transition: background 0.2s ease, transform 0.15s ease;
+        }
+        .sticky-unlock-bar .sticky-unlock-bar__btn--sol:hover { background: var(--sol-cta-hover); transform: translateY(-1px); }
+        .sticky-unlock-bar .sticky-unlock-bar__btn--sol:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+        .page-wrap { padding-bottom: 64px; }
+        @media (min-width: 768px) {
+            .page-wrap { padding-bottom: 72px; }
+            .sticky-unlock-bar { padding: 14px 24px; gap: 16px 24px; }
+        }
+        .problem-block {
+            background: var(--accent-bg);
+            border: 1px solid var(--accent-border);
+            border-left: 4px solid var(--fiat-cta);
+            border-radius: 0 12px 12px 0;
+            padding: 24px;
+            margin-bottom: 28px;
+            font-size: 1rem;
+            line-height: 1.6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+        @media (min-width: 768px) {
+            .problem-block { padding: 28px 32px; margin-bottom: 32px; }
+        }
+        .problem-block strong { color: var(--electric); font-family: 'Space Grotesk', sans-serif; font-weight: 700; }
+        .problem-block p { color: var(--accent-muted); margin: 0; }
+        .who-for { font-size: 1rem; line-height: 1.6; color: var(--accent-muted); margin-top: 0.5rem; }
+        .section-with-img {
+            display: grid;
+            gap: 24px;
+            align-items: center;
+            margin-bottom: 28px;
+        }
+        .section-with-img__media { margin: 0; }
+        .section-with-img__media img {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            object-fit: cover;
+            display: block;
+        }
+        @media (min-width: 768px) {
+            .section-with-img { grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 32px; }
+            .section-with-img--img-right .section-with-img__body { order: 1; }
+            .section-with-img--img-right .section-with-img__media { order: 2; }
+        }
+        .section-featured-img {
+            margin: 0 0 1.5rem;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--accent-border);
+        }
+        .section-featured-img img {
+            width: 100%;
+            height: auto;
+            max-height: 320px;
+            object-fit: cover;
+            display: block;
+        }
+        @media (min-width: 768px) {
+            .section-featured-img { margin: 0 0 1.75rem; }
+            .section-featured-img img { max-height: 380px; }
+        }
+        .tagline-strip {
+            text-align: center;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--muted);
+            line-height: 1.5;
+            margin-top: 1rem;
+            margin-bottom: 2rem;
+        }
+        .tagline-strip span { color: var(--electric); }
+        .tagline-strip span + span { margin-left: 0.5rem; }
+    </style>
+</head>
+<body>
+    <div class="page-wrap">
+        <!-- Sidebar ads: replace inner HTML of #ad-left / #ad-right with your ad code (e.g. Google AdSense). Sidebars hide on viewport &lt; 1024px. -->
+        <aside class="sidebar sidebar-left" aria-label="Advertising">
+            <div class="ad-slot" id="ad-left">
+                <!-- AdSense: replace data-ad-slot with your left sidebar unit slot ID -->
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-1796834252056447"
+                     data-ad-slot="1111111111"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+                <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+            </div>
+        </aside>
+        <div class="container">
+        <div class="hero-banner">
+            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&q=85" width="1200" height="320" alt="AI SEO analytics dashboard showing keyword rankings and performance metrics" class="tool-screenshot" fetchpriority="high">
+        </div>
+        <header>
+            <span class="badge">One-time purchase</span>
+            <h1>AI-driven SEO that actually ranks</h1>
+            <p class="hero-sub">E‑commerce product pages. Blog and content marketing. Same problem everywhere: more AI content, harder to stand out.</p>
+            <p>A clear keyword workflow + templates that work in any market. Pay once — Solana or card.</p>
+            <p class="tagline-strip"><span>One workflow</span> · <span>Any market</span> · <span>No $200/mo tools</span></p>
+        </header>
+
+        <div class="section-with-img section-with-img--img-right">
+            <div class="section-with-img__body">
+                <div class="problem-block">
+                    <strong>Universal pain:</strong>
+                    <p>AI made it easy to publish—so everyone’s publishing. E‑commerce teams have hundreds of product or category pages and don’t know <em>which to optimize first</em>. Content and marketing teams pump out articles that don’t rank because there’s no keyword backbone. Same story in every market: without a real keyword strategy, AI output just adds noise.</p>
+                    <p class="who-for">For e‑commerce, content marketing, and growth teams worldwide who want to use AI without wasting traffic on content that doesn’t rank.</p>
+                </div>
+            </div>
+            <div class="section-with-img__media">
+                <img src="https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800&q=85" width="800" height="450" alt="SERP and keyword analytics dashboard showing search rankings and competition" loading="lazy">
+            </div>
+        </div>
+
+        <section class="teaser">
+            <div class="hero-visual" aria-hidden="true">
+                <svg viewBox="0 0 560 140" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Workflow: keywords to priority list">
+                    <defs>
+                        <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" style="stop-color:#38bdf8"/>
+                            <stop offset="50%" style="stop-color:#6366f1"/>
+                            <stop offset="100%" style="stop-color:#f472b6"/>
+                        </linearGradient>
+                        <filter id="glow">
+                            <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                            <feMerge>
+                                <feMergeNode in="coloredBlur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+                    <!-- Nodes -->
+                    <g filter="url(#glow)">
+                        <rect x="20" y="40" width="100" height="60" rx="10" fill="rgba(56,189,248,0.15)" stroke="rgba(56,189,248,0.5)" stroke-width="1.5"/>
+                        <text x="70" y="78" text-anchor="middle" fill="#38bdf8" font-family="system-ui,sans-serif" font-size="13" font-weight="700">Keywords</text>
+                        <rect x="170" y="40" width="100" height="60" rx="10" fill="rgba(99,102,241,0.15)" stroke="rgba(99,102,241,0.5)" stroke-width="1.5"/>
+                        <text x="220" y="78" text-anchor="middle" fill="#818cf8" font-family="system-ui,sans-serif" font-size="13" font-weight="700">Cluster</text>
+                        <rect x="320" y="40" width="100" height="60" rx="10" fill="rgba(99,102,241,0.15)" stroke="rgba(99,102,241,0.5)" stroke-width="1.5"/>
+                        <text x="370" y="78" text-anchor="middle" fill="#818cf8" font-family="system-ui,sans-serif" font-size="13" font-weight="700">SERP</text>
+                        <rect x="440" y="40" width="100" height="60" rx="10" fill="rgba(52,211,153,0.15)" stroke="rgba(52,211,153,0.6)" stroke-width="1.5"/>
+                        <text x="490" y="78" text-anchor="middle" fill="#34d399" font-family="system-ui,sans-serif" font-size="13" font-weight="700">Priority</text>
+                    </g>
+                    <!-- Connector lines -->
+                    <path d="M 120 70 L 170 70" stroke="url(#lineGrad)" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
+                    <path d="M 270 70 L 320 70" stroke="url(#lineGrad)" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
+                    <path d="M 420 70 L 440 70" stroke="url(#lineGrad)" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
+                    <!-- Small bars (data feel) -->
+                    <rect x="80" y="105" width="24" height="8" rx="2" fill="rgba(56,189,248,0.4)"/>
+                    <rect x="110" y="100" width="18" height="13" rx="2" fill="rgba(56,189,248,0.5)"/>
+                    <rect x="140" y="98" width="22" height="15" rx="2" fill="rgba(99,102,241,0.5)"/>
+                    <rect x="400" y="102" width="20" height="11" rx="2" fill="rgba(52,211,153,0.5)"/>
+                    <rect x="470" y="98" width="28" height="15" rx="2" fill="rgba(52,211,153,0.6)"/>
+                </svg>
+            </div>
+            <div class="flow-strip">
+                <span><strong>Cluster</strong></span>
+                <span class="arrow">→</span>
+                <span><strong>SERP</strong></span>
+                <span class="arrow">→</span>
+                <span><strong>Score</strong></span>
+                <span class="arrow">→</span>
+                <span><strong>Ship</strong></span>
+            </div>
+            <h2>Tool preview</h2>
+            <p>Examples of the kind of workflow you get—rank tracking and content optimization (replace with your own Rankability or Surfer SEO screenshots).</p>
+            <div class="tool-screenshots" role="group" aria-label="Tool screenshot placeholders">
+                <figure>
+                    <img src="https://rankability.com/_astro/Track%20v3.0.CdHZb6SY.png" width="800" height="450" alt="Rankability Track feature: rank tracking dashboard showing keyword positions and AI search visibility" class="tool-screenshot" loading="lazy">
+                    <figcaption>Rankability Track — rank tracking &amp; AI search visibility</figcaption>
+                </figure>
+                <figure>
+                    <img src="https://marketing-assets.surferseo.art/wf-cdn/62666115cfab458794bd512f/661d0f1657fbcd9e0421012c_ce-hero-img-1.webp" width="800" height="450" alt="Surfer SEO Content Editor: content score panel and real-time optimization suggestions" class="tool-screenshot" loading="lazy">
+                    <figcaption>Surfer SEO Content Editor: content score and optimization</figcaption>
+                </figure>
+            </div>
+            <h2>What you get</h2>
+            <figure class="section-featured-img">
+                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=900&q=85" width="900" height="500" alt="Analytics dashboard and keyword research tools on screen" loading="lazy">
+                <figcaption style="font-size:0.875rem;color:var(--accent-muted);padding:0.5rem 0.75rem;">Tool dashboard and SERP data — the workflow in action</figcaption>
+            </figure>
+            <p>One workflow that fits <strong>e‑commerce</strong> (product/category pages, which to optimize first) and <strong>content marketing</strong> (blogs, guides, thought leadership): cluster keywords with AI → analyze SERPs → score difficulty → get a prioritized list. Works in any language or market. Templates (Notion, Google Sheets) and prompts for ChatGPT, Claude, Gemini—no hunting for the “right” prompt.</p>
+            <div class="what-you-get-imgs" role="group" aria-label="What you get: examples">
+                <figure>
+                    <img src="https://images.unsplash.com/photo-1557804506-669a67965ba0?w=400&q=85" width="400" height="220" alt="SERP and keyword analytics dashboard" loading="lazy">
+                    <figcaption>SERP &amp; competition analysis</figcaption>
+                </figure>
+                <figure>
+                    <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&q=85" width="400" height="220" alt="AI keyword research and prompts on screen" loading="lazy">
+                    <figcaption>AI prompts for keyword research</figcaption>
+                </figure>
+                <figure>
+                    <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&q=85" width="400" height="220" alt="Notion or spreadsheet keyword template" loading="lazy">
+                    <figcaption>Notion &amp; Sheet templates</figcaption>
+                </figure>
+                <figure>
+                    <img src="https://images.unsplash.com/photo-1563986768491-68f9a8f160c8?w=400&q=85" width="400" height="220" alt="Priority list and workflow output" loading="lazy">
+                    <figcaption>Priority list &amp; workflow</figcaption>
+                </figure>
+            </div>
+            <ul>
+                <li>Intent clustering → SERP analysis → competition scoring (product pages, blog topics, categories)</li>
+                <li>Ready-made prompts for keyword research and SERP analysis (ChatGPT, Claude, Gemini)</li>
+                <li>Notion template and Google Sheet for tracking and mapping (e‑commerce or content)</li>
+                <li>Clear priority order: know what to optimize or write first, anywhere</li>
+                <li>One-time = lifetime access; or $5/mo for ongoing AI updates (new prompt packs)</li>
+            </ul>
+            <div class="article-teaser" role="complementary" aria-label="Unlock full access">
+                <p class="article-teaser__headline">Get the exact templates and prompts — no more guessing.</p>
+                <p class="article-teaser__text">E‑commerce and content teams use this workflow to prioritize what to optimize first and what to write next. One payment, lifetime access. Unlock below.</p>
+                <p class="article-teaser__cta-line">↓ Unlock templates + prompt packs</p>
+            </div>
+            <div class="pay-cta">
+                <p id="fileProtocolHint" style="display: none; color: #f59e0b; font-size: 0.875rem; margin-bottom: 0.75rem;">
+                    Pay button only works when the page is served over HTTP. Run in terminal: <code style="background: #2a2a2e; padding: 0.2rem 0.4rem; border-radius: 4px;">cd nano-site-1 && npx --yes serve .</code> then open http://localhost:3000
+                </p>
+                <p class="pay-cta__headline">Get access — templates, prompt packs &amp; Notion/Sheet workflow</p>
+                <ul class="pay-cta__included" aria-label="What's included">
+                    <li>Notion &amp; Google Sheet templates</li>
+                    <li>Prompt packs for ChatGPT, Claude, Gemini</li>
+                    <li>Lifetime access (one-time) or $5/mo for new packs</li>
+                </ul>
+                <p style="color: var(--accent-muted); font-size: 0.9375rem; margin-bottom: 0;">One-time ~$1.50 (Solana) or $2 (card). Or subscribe for ongoing AI updates.</p>
+                <div class="pay-cta__buttons">
+                    <a id="payFiatLink" href="#" target="_blank" rel="noopener noreferrer" class="pay-cta__primary pay-fiat">Get access — $2 (card or Apple Pay)</a>
+                    <button type="button" id="payButton">~$1.50 (Solana)</button>
+                    <a id="paySubLink" href="#" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;justify-content:center;min-height:48px;min-width:140px;padding:16px 24px;border-radius:12px;background:transparent;color:var(--fiat-cta);font-weight:600;text-decoration:none;font-size:1rem;font-family:inherit;border:2px solid var(--fiat-cta);transition:background 0.2s ease, color 0.2s ease;">$5/mo — new packs</a>
+                </div>
+                <p style="margin-top:1rem; font-size:0.875rem; line-height:1.6; color: var(--accent-muted);">Lifetime access with one-time. Subscription = premium + new prompt packs each month. Cancel anytime. <a href="#" id="privacyLink" style="color: var(--electric);">Privacy &amp; security</a></p>
+            </div>
+        </section>
+
+        <div id="full-content">
+            <h2>Your keyword workflow + resources</h2>
+            <img src="image2.jpg" alt="Keyword clustering and SERP workflow" class="full-content-img" width="640" height="180" loading="lazy">
+            <p>Follow the process: cluster keywords by intent with AI, analyze SERPs for each cluster, score competition, then prioritize. Use the links below in ChatGPT, Claude, Notion, and Sheets—whether you’re optimizing e‑commerce pages or planning content. No extra subscriptions; works for any market.</p>
+            <p><strong>Resources</strong> — Save these; they’re the same ones used in the workflow.</p>
+            <ul class="resource-links" style="list-style: none; margin-top: 1rem; padding-left: 0;">
+                <li style="margin-bottom: 0.5rem;"><a href="https://landmarklabs.notion.site/Keyword-Research-Template-57bcd74149f44c98af2b695120219200" target="_blank" rel="noopener noreferrer" style="color: var(--electric); text-decoration: none;">Keyword clustering template (Notion)</a> — Landmark Labs: sort, rank &amp; track keywords</li>
+                <li style="margin-bottom: 0.5rem;"><a href="https://docsbot.ai/prompts/writing/serp-analysis-and-content-creation" target="_blank" rel="noopener noreferrer" style="color: var(--electric); text-decoration: none;">SERP analysis &amp; content creation prompt</a> — DocsBot: for ChatGPT, Claude, Gemini</li>
+                <li style="margin-bottom: 0.5rem;"><a href="https://docsbot.ai/prompts/research/keyword-research-prompt" target="_blank" rel="noopener noreferrer" style="color: var(--electric); text-decoration: none;">Keyword research prompt</a> — DocsBot: high-volume, low-competition keywords</li>
+                <li style="margin-bottom: 0.5rem;"><a href="https://docs.google.com/spreadsheets/d/1ZbuxXHhVbPciTTdG-9wsZKhi4XsBBsU5AcgHEiks4hw/template/preview" target="_blank" rel="noopener noreferrer" style="color: var(--electric); text-decoration: none;">Keyword mapping template (Google Sheet)</a> — SEMrush: pillar pages, subpages, target URLs</li>
+            </ul>
+        </div>
+
+        <footer class="page-footer">
+            <a href="#" id="privacyLinkFooter">Privacy &amp; security</a> · One-time ~$1.50 SOL / $2 · $5/mo for AI updates
+        </footer>
+        </div>
+        <aside class="sidebar sidebar-right" aria-label="Advertising">
+            <div class="ad-slot" id="ad-right">
+                <!-- AdSense: replace data-ad-slot with your right sidebar unit slot ID -->
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-1796834252056447"
+                     data-ad-slot="2222222222"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+                <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+            </div>
+        </aside>
+    </div>
+
+    <div id="stickyUnlockBar" class="sticky-unlock-bar" role="banner" aria-label="Unlock premium">
+        <span class="sticky-unlock-bar__label">Unlock Premium</span>
+        <div class="sticky-unlock-bar__buttons">
+            <a id="payFiatLinkSticky" href="#" target="_blank" rel="noopener noreferrer" class="sticky-unlock-bar__btn--fiat">$2 (card or Apple Pay)</a>
+            <button type="button" id="payButtonSticky" class="sticky-unlock-bar__btn--sol">~$1.50 (Solana)</button>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.min.js"></script>
+    <script>
+        (function() {
+            if (window.location.protocol === 'file:') {
+                document.getElementById('fileProtocolHint').style.display = 'block';
+            }
+        })();
+        function getProvider() {
+            if ('solana' in window && window.solana?.isPhantom) return window.solana;
+            alert('Install Phantom wallet, or open this page from http://localhost (run: cd nano-site-1 && npx --yes serve .)');
+            throw 'No wallet';
+        }
+
+        const payButton = document.getElementById('payButton');
+        const payButtonSticky = document.getElementById('payButtonSticky');
+        const fullContent = document.getElementById('full-content');
+        let connection = null;
+
+        const RPC = 'https://api.devnet.solana.com';
+
+        payButton.addEventListener('click', async () => {
+            if (window.location.protocol === 'file:') {
+                alert('Pay button does not work when opening the file directly. Run in terminal: cd nano-site-1 && npx --yes serve .\nThen open http://localhost:3000');
+                return;
+            }
+            try {
+                const provider = getProvider();
+                if (!provider.isConnected) await provider.connect();
+
+                if (!connection) {
+                    payButton.textContent = 'Connecting...';
+                    payButton.disabled = true;
+                    if (payButtonSticky) { payButtonSticky.textContent = 'Connecting...'; payButtonSticky.disabled = true; }
+                    connection = new solanaWeb3.Connection(RPC);
+                    await connection.getVersion();
+                    payButton.textContent = '~$1.50 (Solana)';
+                    payButton.disabled = false;
+                    if (payButtonSticky) { payButtonSticky.textContent = '~$1.50 (Solana)'; payButtonSticky.disabled = false; }
+                }
+
+                const recipient = new solanaWeb3.PublicKey('Bw2M5DqDsHsNZhGbmyj8WQ9iX55Gk8RPrmxpQj35aUxM');
+
+                payButton.textContent = 'Confirm in Phantom...';
+                payButton.disabled = true;
+                if (payButtonSticky) { payButtonSticky.textContent = 'Confirm in Phantom...'; payButtonSticky.disabled = true; }
+                const { blockhash } = await connection.getLatestBlockhash();
+                const tx = new solanaWeb3.Transaction({
+                    recentBlockhash: blockhash,
+                    feePayer: provider.publicKey
+                }).add(solanaWeb3.SystemProgram.transfer({
+                    fromPubkey: provider.publicKey,
+                    toPubkey: recipient,
+                    lamports: 0.01 * solanaWeb3.LAMPORTS_PER_SOL
+                }));
+
+                const { signature } = await provider.signAndSendTransaction(tx);
+
+                fullContent.style.display = 'block';
+                payButton.style.display = 'none';
+                if (payButtonSticky) payButtonSticky.style.display = 'none';
+                var stickyBar = document.getElementById('stickyUnlockBar');
+                if (stickyBar) stickyBar.style.display = 'none';
+                alert('Payment sent! TX: ' + signature.slice(0, 16) + '...');
+
+                // Confirm in background (don't block UX; devnet can be slow)
+                connection.confirmTransaction(signature, 'confirmed').catch(function() {});
+            } catch (err) {
+                alert('Error: ' + (err.message || String(err)));
+                payButton.textContent = '~$1.50 (Solana)';
+                payButton.disabled = false;
+                if (payButtonSticky) { payButtonSticky.textContent = '~$1.50 (Solana)'; payButtonSticky.disabled = false; }
+            }
+        });
+        // Pay $2 and Privacy: use localhost when testing locally, else your deployed worker URL
+        var PAYWALL_URL = /localhost|127\.0\.0\.1/.test(window.location.hostname)
+            ? 'http://localhost:8787/premium/'
+            : 'https://my-paywall-worker.workers.dev/premium/';
+        var PRIVACY_URL = PAYWALL_URL.replace(/\/premium\/?$/, '/privacy');
+        document.getElementById('payFiatLink').href = PAYWALL_URL;
+        document.getElementById('paySubLink').href = PAYWALL_URL;
+        var payFiatSticky = document.getElementById('payFiatLinkSticky');
+        if (payFiatSticky) payFiatSticky.href = PAYWALL_URL;
+        var pl = document.getElementById('privacyLink');
+        if (pl) pl.href = PRIVACY_URL;
+        var plFooter = document.getElementById('privacyLinkFooter');
+        if (plFooter) plFooter.href = PRIVACY_URL;
+
+        if (payButtonSticky) payButtonSticky.addEventListener('click', function() { payButton.click(); });
+    </script>
+</body>
+</html>
