@@ -289,6 +289,15 @@ function generatePaywallHTML(origin: string): string {
 <!DOCTYPE html>
 <html>
 <head><meta charset="UTF-8"><title>Premium AI Tools Access</title>
+<!-- Hide AdSense on paywall & any premium pages -->
+<script>
+  if (window.location.pathname.includes('/premium')) {
+    document.documentElement.style.setProperty('--adsense-display', 'none');
+  }
+</script>
+<style>
+  ins.adsbygoogle, .adsbygoogle { display: none !important; }
+</style>
 <style>
   .pay-options{display:flex;flex-wrap:wrap;gap:0.75rem;justify-content:center;margin:1rem 0;}
   .pay-btn{display:inline-flex;align-items:center;padding:0.75rem 1.25rem;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;border:none;font-family:inherit;}
