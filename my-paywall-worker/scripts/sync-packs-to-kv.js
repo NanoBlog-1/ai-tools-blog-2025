@@ -50,7 +50,7 @@ function main() {
     }
     const absolutePath = path.resolve(ROOT, filePath);
     execSync(
-      `npx wrangler kv key put "${key}" --path "${absolutePath}" --namespace-id "${namespaceId}"`,
+      `npx wrangler kv key put "${key}" --path "${absolutePath}" --namespace-id "${namespaceId}" --remote`,
       { cwd: ROOT, stdio: 'inherit' }
     );
   }

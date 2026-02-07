@@ -1,8 +1,14 @@
 {
   "packs": [
     {
+      "slug": "2026-02-ecommerce-serp",
+      "title": "E-commerce SERP & AI Overview prompts (2026)",
+      "date": "2026-02-01",
+      "description": "Product/category SERP briefs, clustering, titles & meta, SERP features, and AI Overview visibility. Use with ChatGPT, Claude, or Gemini."
+    },
+    {
       "slug": "2025-02-ecommerce-serp",
-      "title": "E‑commerce SERP prompts",
+      "title": "E-commerce SERP prompts",
       "date": "2025-02-01",
       "description": "Prompts for product and category page SERP analysis. Use with ChatGPT, Claude, or Gemini."
     }

@@ -22,7 +22,7 @@ use_case: "e.g. e-commerce SERP, blog clustering, competition scoring"
 
 ```markdown
 ---
-title: "E‑commerce SERP prompts"
+title: "E-commerce SERP prompts"
 date: "2025-02-01"
 use_case: "e-commerce SERP analysis"
 ---

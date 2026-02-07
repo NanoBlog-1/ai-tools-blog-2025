@@ -1,8 +1,14 @@
-const SOLANA_RPC = 'https://api.mainnet-beta.solana.com';
 const RECIPIENT_PUBKEY = 'Bw2M5DqDsHsNZhGbmyj8WQ9iX55Gk8RPrmxpQj35aUxM';
 const STRIPE_PRICE_CENTS = 200; // $2 one-time
 const STRIPE_SUBSCRIPTION_CENTS = 500; // $5/month AI updates
 const STRIPE_API = 'https://api.stripe.com/v1';
+
+const PUBLIC_SOLANA_RPC = 'https://api.mainnet-beta.solana.com';
+
+function getSolanaRpcUrl(apiKey?: string): string {
+	if (apiKey && apiKey.trim()) return 'https://mainnet.helius-rpc.com/?api-key=' + encodeURIComponent(apiKey.trim());
+	return PUBLIC_SOLANA_RPC;
+}
 
 /** Inline fallback when ASSETS does not serve /privacy.html (e.g. dev or deploy quirk). */
 const PRIVACY_HTML = (origin: string) => `<!DOCTYPE html>
@@ -53,6 +59,7 @@ interface Env {
 	ASSETS: { fetch: typeof fetch };
 	STRIPE_SECRET_KEY?: string;
 	PROMPT_PACKS?: KVNamespace;
+	HELIUS_API_KEY?: string;
 }
 
 export default {
@@ -127,6 +134,7 @@ export default {
 
 		// Protect premium paths
 		if (url.pathname.startsWith('/premium/')) {
+			const solanaRpcUrl = getSolanaRpcUrl(env.HELIUS_API_KEY);
 			const cookie = request.headers.get('Cookie') || '';
 			const authTokenMatch = cookie.match(/auth_token=([^;]*)/);
 			const authToken = authTokenMatch ? decodeURIComponent(authTokenMatch[1].trim()) : null;
@@ -135,7 +143,7 @@ export default {
 
 			let hasAccess = false;
 			if (authToken) {
-				const isValid = await verifySolanaTx(authToken);
+				const isValid = await verifySolanaTx(authToken, solanaRpcUrl);
 				if (isValid) hasAccess = true;
 			}
 			if (!hasAccess && stripeSessionId && env.STRIPE_SECRET_KEY) {
@@ -143,7 +151,7 @@ export default {
 				if (isValid) hasAccess = true;
 			}
 			if (!authToken && !stripeSessionId) {
-				return new Response(generatePaywallHTML(url.origin), {
+				return new Response(generatePaywallHTML(url.origin, solanaRpcUrl), {
 					headers: { 'Content-Type': 'text/html' },
 					status: 402,
 				});
@@ -335,7 +343,7 @@ async function verifyStripeSession(sessionId: string, secretKey: string): Promis
 	}
 }
 
-function generatePaywallHTML(origin: string): string {
+function generatePaywallHTML(origin: string, solanaRpcUrl: string): string {
 	return `
 <!DOCTYPE html>
 <html>
@@ -393,7 +401,7 @@ function generatePaywallHTML(origin: string): string {
         try {
           var provider = window.solana;
           await provider.connect();
-          var connection = new solanaWeb3.Connection(${JSON.stringify(SOLANA_RPC)});
+          var connection = new solanaWeb3.Connection(${JSON.stringify(solanaRpcUrl)});
           var blockhash = (await connection.getLatestBlockhash()).blockhash;
           var tx = new solanaWeb3.Transaction({
             recentBlockhash: blockhash,
@@ -404,8 +412,10 @@ function generatePaywallHTML(origin: string): string {
             lamports: 0.01 * solanaWeb3.LAMPORTS_PER_SOL
           }));
           var sig = await provider.signAndSendTransaction(tx);
-          var signature = (typeof sig.signature === 'string' ? sig.signature : sig) || '';
-          document.cookie = 'auth_token=' + encodeURIComponent(signature) + '; path=/; max-age=31536000; samesite=lax';
+          var signature = (typeof sig === 'string' ? sig : (sig && typeof sig.signature === 'string' ? sig.signature : (sig && sig.signature != null ? String(sig.signature) : ''))) || '';
+          if (!signature) { alert('Could not get transaction signature'); enableAll(); btn.textContent = '~$1.50 (Solana)'; return; }
+          var cookieOpts = 'path=/; max-age=31536000; samesite=lax' + (origin.startsWith('https') ? '; secure' : '');
+          document.cookie = 'auth_token=' + encodeURIComponent(signature) + '; ' + cookieOpts;
           window.location.reload();
         } catch (e) {
           alert('Error: ' + (e && e.message) || e);
@@ -450,13 +460,13 @@ function generatePaywallHTML(origin: string): string {
 }
 
 /** Verify a Solana tx signature via RPC. */
-async function verifySolanaTx(signature: string): Promise<boolean> {
+async function verifySolanaTx(signature: string, solanaRpcUrl: string): Promise<boolean> {
 	const trimmed = (signature || '').trim();
 	if (!trimmed || trimmed.length < 32) return false;
 
 	for (let attempt = 0; attempt < 3; attempt++) {
 		try {
-			const res = await fetch(SOLANA_RPC, {
+			const res = await fetch(solanaRpcUrl, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
@@ -483,7 +493,7 @@ async function verifySolanaTx(signature: string): Promise<boolean> {
 	}
 
 	try {
-		const res = await fetch(SOLANA_RPC, {
+		const res = await fetch(solanaRpcUrl, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({
