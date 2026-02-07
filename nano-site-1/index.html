@@ -965,7 +965,7 @@
         // Pay $2 and Privacy: use localhost when testing locally, else your deployed worker URL
         var PAYWALL_URL = /localhost|127\.0\.0\.1/.test(window.location.hostname)
             ? 'http://localhost:8787/premium/'
-            : 'https://my-paywall-worker.workers.dev/premium/';
+            : 'https://my-paywall-worker.best-ai-tools.workers.dev/premium/';
         var PRIVACY_URL = PAYWALL_URL.replace(/\/premium\/?$/, '/privacy');
         var payFiatLink = document.getElementById('payFiatLink');
         if (payFiatLink) payFiatLink.href = PAYWALL_URL;
