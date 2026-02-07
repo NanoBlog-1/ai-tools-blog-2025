@@ -451,6 +451,7 @@ function generatePaywallHTML(origin: string, solanaRpcUrl: string): string {
     <button type="button" id="payStripe" class="pay-btn stripe">$2 one-time (card or Apple Pay)</button>
     <button type="button" id="paySub" class="pay-btn sub">$5/mo — AI updates</button>
   </div>
+  <p class="pay-copy" style="font-size:0.75rem;margin-top:0.35rem;color:#71717a;">Unlock your Phantom (or wallet) first, then click Pay.</p>
   <p class="pay-copy">Lifetime access with one-time. Subscription includes premium + new prompt packs each month. Cancel anytime.</p>
   <p style="margin-top:1rem;"><img src="/image1.jpg" alt="AI keyword research" style="max-width:100%;height:auto;border-radius:8px;max-height:200px;object-fit:cover;" width="600" height="200" onerror="this.style.display='none'"></p>
   <p style="margin-top:1.5rem;font-size:0.8rem;color:#71717a;"><a href="/privacy" style="color:#9945ff;">Privacy &amp; security</a> — We do not store card details. Payments are processed by Stripe or on-chain (Solana). Access is stored only in a cookie on your device.</p>
@@ -493,7 +494,7 @@ function generatePaywallHTML(origin: string, solanaRpcUrl: string): string {
           document.cookie = 'auth_token=' + encodeURIComponent(signature) + '; ' + cookieOpts;
           window.location.reload();
         } catch (e) {
-          alert('Error: ' + (e && e.message) || e);
+          alert('Please unlock your wallet and try again, or approve the request in your wallet.');
           enableAll();
           btn.textContent = '~$1.50 (Solana)';
         }

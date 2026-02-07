@@ -845,6 +845,7 @@
                     <button type="button" id="payButton">~$1.50 (Solana)</button>
                     <a id="paySubLink" href="#" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;justify-content:center;min-height:48px;min-width:140px;padding:16px 24px;border-radius:12px;background:transparent;color:var(--fiat-cta);font-weight:600;text-decoration:none;font-size:1rem;font-family:inherit;border:2px solid var(--fiat-cta);transition:background 0.2s ease, color 0.2s ease;">$5/mo — new packs</a>
                 </div>
+                <p style="font-size:0.75rem;color:var(--accent-muted);margin-top:0.5rem;">Unlock your Phantom (or wallet) first, then click Pay.</p>
                 <p style="margin-top:1rem; font-size:0.875rem; line-height:1.6; color: var(--accent-muted);">Lifetime access with one-time. Subscription = premium + new prompt packs each month. Cancel anytime. <a href="#" id="privacyLink" style="color: var(--electric);">Privacy &amp; security</a></p>
             </div>
         </section>
@@ -955,7 +956,7 @@
                 // Redirect to worker with signature so it can set auth cookie and grant premium
                 window.location.href = PAYWALL_URL + '?solana_sig=' + encodeURIComponent(signature);
             } catch (err) {
-                alert('Error: ' + (err.message || String(err)));
+                alert('Please unlock your wallet and try again, or approve the request in your wallet.');
                 payButton.textContent = '~$1.50 (Solana)';
                 payButton.disabled = false;
                 if (payButtonSticky) { payButtonSticky.textContent = '~$1.50 (Solana)'; payButtonSticky.disabled = false; }
