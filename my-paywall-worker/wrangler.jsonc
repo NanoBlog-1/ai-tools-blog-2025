@@ -7,9 +7,6 @@
 	"name": "my-paywall-worker",
 	"main": "src/index.ts",
 	"compatibility_date": "2026-01-28",
-	"compatibility_flags": [
-		"global_fetch_strictly_public"
-	],
 	"assets": {
 		"directory": "./public",
 		"binding": "ASSETS",
@@ -22,6 +19,12 @@
 		{
 			"binding": "PROMPT_PACKS",
 			"id": "9515c3e429ee41b3bfb9e61803f46dfe"
+		}
+	],
+	"routes": [
+		{
+			"pattern": "best-ai-tools-for-keyword-research-2025.xyz/premium/*",
+			"zone_name": "best-ai-tools-for-keyword-research-2025.xyz"
 		}
 	]
 	/**

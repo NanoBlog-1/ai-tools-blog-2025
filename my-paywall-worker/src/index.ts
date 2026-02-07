@@ -102,6 +102,17 @@ export default {
 			return handleCreateSubscription(request, env);
 		}
 
+		// Solana RPC proxy: so the main site (custom domain) can use Helius without 403 from public RPC
+		if (url.pathname === '/api/solana-rpc') {
+			if (request.method === 'GET') {
+				return new Response(JSON.stringify({ ok: true, rpc: 'proxy', use: 'POST for JSON-RPC' }), {
+					status: 200,
+					headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+				});
+			}
+			return handleSolanaRpcProxy(request, env);
+		}
+
 		// Stripe success: verify session, set cookie, redirect to /premium/
 		if (url.pathname.startsWith('/premium/') && url.searchParams.get('stripe') === 'success') {
 			const sessionId = url.searchParams.get('session_id');
@@ -137,9 +148,26 @@ export default {
 			const solanaRpcUrl = getSolanaRpcUrl(env.HELIUS_API_KEY);
 			const cookie = request.headers.get('Cookie') || '';
 			const authTokenMatch = cookie.match(/auth_token=([^;]*)/);
-			const authToken = authTokenMatch ? decodeURIComponent(authTokenMatch[1].trim()) : null;
+			let authToken = authTokenMatch ? decodeURIComponent(authTokenMatch[1].trim()) : null;
 			const stripeMatch = cookie.match(/stripe_paid=([^;]*)/);
 			const stripeSessionId = stripeMatch ? decodeURIComponent(stripeMatch[1].trim()) : null;
+
+			// Main site sends ?solana_sig= after payment; verify and set cookie then redirect
+			const solanaSig = url.searchParams.get('solana_sig');
+			if (solanaSig && !authToken && !stripeSessionId) {
+				const isValid = await verifySolanaTx(solanaSig.trim(), solanaRpcUrl);
+				if (isValid) {
+					const isLocalhost = url.origin.includes('localhost');
+					const cookieOpts = `path=/; max-age=31536000; samesite=lax; httponly${isLocalhost ? '' : '; secure'}`;
+					return new Response(null, {
+						status: 302,
+						headers: {
+							'Location': url.origin + '/premium/',
+							'Set-Cookie': `auth_token=${encodeURIComponent(solanaSig.trim())}; ${cookieOpts}`,
+						},
+					});
+				}
+			}
 
 			let hasAccess = false;
 			if (authToken) {
@@ -316,6 +344,53 @@ async function handleCreateSubscription(request: Request, env: Env): Promise<Res
 		return new Response(
 			JSON.stringify({ error: 'Subscription checkout failed', detail: message }),
 			{ status: 500, headers: { 'Content-Type': 'application/json' } }
+		);
+	}
+}
+
+/** Proxy JSON-RPC to Solana RPC (Helius when key set) so the main site can avoid 403 from public RPC. */
+async function handleSolanaRpcProxy(request: Request, env: Env): Promise<Response> {
+	const corsHeaders: Record<string, string> = {
+		'Access-Control-Allow-Origin': '*',
+		'Access-Control-Allow-Methods': 'POST, OPTIONS',
+		'Access-Control-Allow-Headers': 'Content-Type',
+	};
+	if (request.method === 'OPTIONS') {
+		return new Response(null, { status: 204, headers: corsHeaders });
+	}
+	let body: string;
+	try {
+		body = await request.text();
+	} catch {
+		return new Response(JSON.stringify({ jsonrpc: '2.0', error: { code: -32700, message: 'Parse error' }, id: null }), {
+			status: 400,
+			headers: { 'Content-Type': 'application/json', ...corsHeaders },
+		});
+	}
+	try {
+		const rpcUrl = getSolanaRpcUrl(env.HELIUS_API_KEY);
+		const res = await fetch(rpcUrl, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body,
+		});
+		const text = await res.text();
+		return new Response(text, {
+			status: res.status,
+			headers: { 'Content-Type': 'application/json', ...corsHeaders },
+		});
+	} catch (e) {
+		const message = e instanceof Error ? e.message : String(e);
+		return new Response(
+			JSON.stringify({
+				jsonrpc: '2.0',
+				error: { code: -32603, message: 'Proxy error: ' + message },
+				id: null,
+			}),
+			{
+				status: 502,
+				headers: { 'Content-Type': 'application/json', ...corsHeaders },
+			}
 		);
 	}
 }

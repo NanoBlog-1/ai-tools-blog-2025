@@ -2,40 +2,112 @@ import { env, createExecutionContext, waitOnExecutionContext, SELF } from 'cloud
 import { describe, it, expect } from 'vitest';
 import worker from '../src';
 
-describe('Hello World user worker', () => {
-	describe('request for /message', () => {
-		it('/ responds with "Hello, World!" (unit style)', async () => {
-			const request = new Request<unknown, IncomingRequestCfProperties>('http://example.com/message');
-			// Create an empty context to pass to `worker.fetch()`.
+const BASE = 'http://example.com';
+
+describe('Paywall worker', () => {
+	describe('Redirects', () => {
+		it('redirects /premuim to /premium/', async () => {
+			const request = new Request(`${BASE}/premuim`);
 			const ctx = createExecutionContext();
 			const response = await worker.fetch(request, env, ctx);
-			// Wait for all `Promise`s passed to `ctx.waitUntil()` to settle before running test assertions
 			await waitOnExecutionContext(ctx);
-			expect(await response.text()).toMatchInlineSnapshot(`"Hello, World!"`);
+			expect(response.status).toBe(302);
+			expect(response.headers.get('Location')).toBe(`${BASE}/premium/`);
 		});
 
-		it('responds with "Hello, World!" (integration style)', async () => {
-			const request = new Request('http://example.com/message');
-			const response = await SELF.fetch(request);
-			expect(await response.text()).toMatchInlineSnapshot(`"Hello, World!"`);
+		it('redirects /premium/?clear=1 and clears cookies', async () => {
+			const request = new Request(`${BASE}/premium/?clear=1`);
+			const ctx = createExecutionContext();
+			const response = await worker.fetch(request, env, ctx);
+			await waitOnExecutionContext(ctx);
+			expect(response.status).toBe(302);
+			expect(response.headers.get('Location')).toBe(`${BASE}/premium/`);
+			const setCookie = response.headers.getSetCookie?.() ?? [];
+			expect(setCookie.some((c) => c.includes('auth_token=') && c.includes('max-age=0'))).toBe(true);
+			expect(setCookie.some((c) => c.includes('stripe_paid=') && c.includes('max-age=0'))).toBe(true);
 		});
 	});
 
-	describe('request for /random', () => {
-		it('/ responds with a random UUID (unit style)', async () => {
-			const request = new Request<unknown, IncomingRequestCfProperties>('http://example.com/random');
-			// Create an empty context to pass to `worker.fetch()`.
+	describe('Paywall and access', () => {
+		it('returns 402 paywall HTML for /premium/ with no cookie', async () => {
+			const request = new Request(`${BASE}/premium/`);
 			const ctx = createExecutionContext();
 			const response = await worker.fetch(request, env, ctx);
-			// Wait for all `Promise`s passed to `ctx.waitUntil()` to settle before running test assertions
 			await waitOnExecutionContext(ctx);
-			expect(await response.text()).toMatch(/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}/);
+			expect(response.status).toBe(402);
+			expect(response.headers.get('Content-Type')).toContain('text/html');
+			const html = await response.text();
+			expect(html).toMatch(/Unlock|Solana|Stripe|~\$1\.50/);
 		});
 
-		it('responds with a random UUID (integration style)', async () => {
-			const request = new Request('http://example.com/random');
-			const response = await SELF.fetch(request);
-			expect(await response.text()).toMatch(/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}/);
+		it('returns 403 for /premium/ with invalid auth cookie', async () => {
+			const request = new Request(`${BASE}/premium/`, {
+				headers: { Cookie: 'auth_token=not-a-valid-signature' },
+			});
+			const ctx = createExecutionContext();
+			const response = await worker.fetch(request, env, ctx);
+			await waitOnExecutionContext(ctx);
+			expect(response.status).toBe(403);
+			expect(await response.text()).toBe('Invalid or expired access');
+		});
+	});
+
+	describe('API routes', () => {
+		it('GET /api/debug-stripe returns JSON with stripeConfigured and keyLength', async () => {
+			const request = new Request(`${BASE}/api/debug-stripe`);
+			const ctx = createExecutionContext();
+			const response = await worker.fetch(request, env, ctx);
+			await waitOnExecutionContext(ctx);
+			expect(response.status).toBe(200);
+			expect(response.headers.get('Content-Type')).toContain('application/json');
+			const data = (await response.json()) as { stripeConfigured: boolean; keyLength: number };
+			expect(typeof data.stripeConfigured).toBe('boolean');
+			expect(typeof data.keyLength).toBe('number');
+		});
+
+		it('POST /api/create-checkout returns JSON (500 when Stripe not configured, 200 with url when configured)', async () => {
+			const request = new Request(`${BASE}/api/create-checkout`, { method: 'POST' });
+			const ctx = createExecutionContext();
+			const response = await worker.fetch(request, env, ctx);
+			await waitOnExecutionContext(ctx);
+			const data = (await response.json()) as { error?: string; url?: string };
+			if (response.status === 500) {
+				expect(data.error).toBeDefined();
+			} else {
+				expect(response.status).toBe(200);
+				expect(data.url).toBeDefined();
+			}
+		});
+
+		it('POST /api/create-subscription returns JSON (500 when Stripe not configured, 200 with url when configured)', async () => {
+			const request = new Request(`${BASE}/api/create-subscription`, { method: 'POST' });
+			const ctx = createExecutionContext();
+			const response = await worker.fetch(request, env, ctx);
+			await waitOnExecutionContext(ctx);
+			const data = (await response.json()) as { error?: string; url?: string };
+			if (response.status === 500) {
+				expect(data.error).toBeDefined();
+			} else {
+				expect(response.status).toBe(200);
+				expect(data.url).toBeDefined();
+			}
+		});
+	});
+
+	describe('Integration (SELF)', () => {
+		it('returns 402 for /premium/ with no cookie', async () => {
+			const response = await SELF.fetch(`${BASE}/premium/`);
+			expect(response.status).toBe(402);
+			const html = await response.text();
+			expect(html).toMatch(/Unlock|Solana|Stripe/);
+		});
+
+		it('GET /api/debug-stripe returns JSON', async () => {
+			const response = await SELF.fetch(`${BASE}/api/debug-stripe`);
+			expect(response.status).toBe(200);
+			const data = (await response.json()) as { stripeConfigured: boolean; keyLength: number };
+			expect(typeof data.stripeConfigured).toBe('boolean');
+			expect(typeof data.keyLength).toBe('number');
 		});
 	});
 });

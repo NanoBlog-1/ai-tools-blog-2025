@@ -909,9 +909,10 @@
         let connection = null;
 
         // Use worker RPC proxy so Solana works from main site (avoids 403 from public RPC)
+        // Production: worker runs on custom domain (/premium/* and /api/*). Local: worker on :8787.
         var WORKER_BASE = /localhost|127\.0\.0\.1/.test(window.location.hostname)
             ? 'http://localhost:8787'
-            : 'https://my-paywall-worker.best-ai-tools.workers.dev';
+            : 'https://best-ai-tools-for-keyword-research-2025.xyz';
         var RPC = WORKER_BASE + '/api/solana-rpc';
 
         payButton.addEventListener('click', async () => {
