@@ -1,8 +1,53 @@
-const SOLANA_RPC = 'https://api.devnet.solana.com';
+const SOLANA_RPC = 'https://api.mainnet-beta.solana.com';
 const RECIPIENT_PUBKEY = 'Bw2M5DqDsHsNZhGbmyj8WQ9iX55Gk8RPrmxpQj35aUxM';
 const STRIPE_PRICE_CENTS = 200; // $2 one-time
 const STRIPE_SUBSCRIPTION_CENTS = 500; // $5/month AI updates
 const STRIPE_API = 'https://api.stripe.com/v1';
+
+/** Inline fallback when ASSETS does not serve /privacy.html (e.g. dev or deploy quirk). */
+const PRIVACY_HTML = (origin: string) => `<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Privacy &amp; Security — Premium AI Keyword Tools</title>
+	<style>
+		body { font-family: system-ui, sans-serif; max-width: 640px; margin: 2rem auto; padding: 0 1rem; background: #0d0d0f; color: #e4e4e7; line-height: 1.6; }
+		h1 { color: #9945ff; font-size: 1.5rem; margin-bottom: 1rem; }
+		h2 { font-size: 1.1rem; color: #e4e4e7; margin-top: 1.5rem; margin-bottom: 0.5rem; }
+		p, li { color: #71717a; margin-bottom: 0.75rem; }
+		a { color: #9945ff; text-decoration: none; }
+		a:hover { text-decoration: underline; }
+		ul { padding-left: 1.25rem; }
+		.back { margin-top: 2rem; font-size: 0.9rem; }
+	</style>
+</head>
+<body>
+	<h1>Privacy &amp; Security</h1>
+	<p>Your security and privacy matter. Here's how we handle your data.</p>
+	<h2>What we collect</h2>
+	<ul>
+		<li><strong>Payment proof only:</strong> To grant access after payment, we store a transaction signature (Solana) or a Stripe session ID in a cookie on your device. We do not store your card number, wallet address, or other payment details on our servers.</li>
+		<li><strong>No account required:</strong> You do not create an account or give us your email unless you choose to.</li>
+	</ul>
+	<h2>How payments work</h2>
+	<ul>
+		<li><strong>Card / Apple Pay:</strong> Processed by <a href="https://stripe.com/privacy" target="_blank" rel="noopener noreferrer">Stripe</a>. We never see or store your card details. Stripe's privacy policy applies to payment data.</li>
+		<li><strong>Solana:</strong> Payment is sent on the blockchain to our wallet. The transaction is public on the network; we only use the signature to verify payment and grant access.</li>
+	</ul>
+	<h2>Cookies</h2>
+	<p>We use a single cookie to remember that you have paid, so you can access premium content without paying again. This cookie is stored only on your device, is not used for advertising or tracking, and is not shared with third parties for marketing.</p>
+	<h2>We do not</h2>
+	<ul>
+		<li>Sell or rent your data</li>
+		<li>Use your data for advertising or cross-site tracking</li>
+		<li>Store card numbers or full payment details</li>
+	</ul>
+	<h2>Security</h2>
+	<p>Access cookies are set with secure options (e.g. HttpOnly where possible, Secure on HTTPS, SameSite) to reduce the risk of misuse. We do not log or retain payment details beyond what is needed to verify access.</p>
+	<p class="back"><a href="${origin}/">← Back to home</a> · <a href="${origin}/premium/">Premium</a></p>
+</body>
+</html>`;
 
 interface Env {
 	ASSETS: { fetch: typeof fetch };
@@ -19,11 +64,17 @@ export default {
 			return Response.redirect(url.origin + '/premium/', 302);
 		}
 
-		// Clean URL: /privacy → privacy.html
+		// Clean URL: /privacy → privacy.html (fallback inline if asset missing)
 		if (url.pathname === '/privacy' || url.pathname === '/privacy/') {
 			const privacyRequest = new Request(url.origin + '/privacy.html', { headers: request.headers });
 			const privacyResponse = await env.ASSETS.fetch(privacyRequest);
 			if (privacyResponse.ok) return privacyResponse;
+			const origin = url.origin;
+			const fallback = new Response(PRIVACY_HTML(origin), {
+				headers: { 'Content-Type': 'text/html; charset=utf-8' },
+				status: 200,
+			});
+			return fallback;
 		}
 
 		// Debug: check if Stripe key is loaded (only in dev)
@@ -342,7 +393,7 @@ function generatePaywallHTML(origin: string): string {
         try {
           var provider = window.solana;
           await provider.connect();
-          var connection = new solanaWeb3.Connection('https://api.devnet.solana.com');
+          var connection = new solanaWeb3.Connection(${JSON.stringify(SOLANA_RPC)});
           var blockhash = (await connection.getLatestBlockhash()).blockhash;
           var tx = new solanaWeb3.Transaction({
             recentBlockhash: blockhash,

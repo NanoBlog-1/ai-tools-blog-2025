@@ -46,17 +46,17 @@ echo 'STRIPE_SECRET_KEY=sk_test_PASTE_YOUR_KEY_HERE' > .dev.vars
 
 Then edit `.dev.vars` and replace `sk_test_PASTE_YOUR_KEY_HERE` with your real `sk_test_...` key. Don’t commit `.dev.vars` (it’s gitignored).
 
-**Option B — Deployed worker (for production)**  
-Answer **Y** when Wrangler asks to create the worker, then deploy:
+**Option B — Deployed worker: set secret for production**  
+For **real card charges** in production, set the **live** Stripe secret (get it from https://dashboard.stripe.com/apikeys — use **Live** mode, not Test):
 
 ```bash
 cd "/Users/davidoliva/Desktop/Business Apps/ai-blog-project/ai-tools-blog-2025/my-paywall-worker"
 npx wrangler secret put STRIPE_SECRET_KEY
-# When asked "create a new Worker?" type Y and press Enter, then paste your key
-npm run deploy
 ```
 
-When prompted, paste your Stripe secret key (e.g. `sk_test_...` or `sk_live_...`).
+When prompted, paste your **live** key (`sk_live_...`). This is stored as a secret in Cloudflare and is used when the worker runs in production. For local dev, keep `sk_test_...` in `.dev.vars` only.
+
+If Wrangler asks “create a new Worker?”, type **Y** and press Enter, then run `npm run deploy`.
 
 ---
 
