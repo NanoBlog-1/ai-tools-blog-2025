@@ -908,7 +908,11 @@
         const fullContent = document.getElementById('full-content');
         let connection = null;
 
-        const RPC = 'https://api.mainnet-beta.solana.com';
+        // Use worker RPC proxy so Solana works from main site (avoids 403 from public RPC)
+        var WORKER_BASE = /localhost|127\.0\.0\.1/.test(window.location.hostname)
+            ? 'http://localhost:8787'
+            : 'https://my-paywall-worker.best-ai-tools.workers.dev';
+        var RPC = WORKER_BASE + '/api/solana-rpc';
 
         payButton.addEventListener('click', async () => {
             if (window.location.protocol === 'file:') {
@@ -947,15 +951,8 @@
 
                 const { signature } = await provider.signAndSendTransaction(tx);
 
-                fullContent.style.display = 'block';
-                payButton.style.display = 'none';
-                if (payButtonSticky) payButtonSticky.style.display = 'none';
-                var stickyBar = document.getElementById('stickyUnlockBar');
-                if (stickyBar) stickyBar.style.display = 'none';
-                alert('Payment sent! TX: ' + signature.slice(0, 16) + '...');
-
-                // Confirm in background (don't block UX; devnet can be slow)
-                connection.confirmTransaction(signature, 'confirmed').catch(function() {});
+                // Redirect to worker with signature so it can set auth cookie and grant premium
+                window.location.href = PAYWALL_URL + '?solana_sig=' + encodeURIComponent(signature);
             } catch (err) {
                 alert('Error: ' + (err.message || String(err)));
                 payButton.textContent = '~$1.50 (Solana)';
@@ -963,10 +960,8 @@
                 if (payButtonSticky) { payButtonSticky.textContent = '~$1.50 (Solana)'; payButtonSticky.disabled = false; }
             }
         });
-        // Pay $2 and Privacy: use localhost when testing locally, else your deployed worker URL
-        var PAYWALL_URL = /localhost|127\.0\.0\.1/.test(window.location.hostname)
-            ? 'http://localhost:8787/premium/'
-            : 'https://my-paywall-worker.best-ai-tools.workers.dev/premium/';
+        // Pay $2 and Privacy: same worker base as RPC
+        var PAYWALL_URL = WORKER_BASE + '/premium/';
         var PRIVACY_URL = PAYWALL_URL.replace(/\/premium\/?$/, '/privacy');
         var payFiatLink = document.getElementById('payFiatLink');
         if (payFiatLink) payFiatLink.href = PAYWALL_URL;
