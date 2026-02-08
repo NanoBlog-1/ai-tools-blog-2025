@@ -100,17 +100,6 @@
 		.footer a:hover { text-decoration: underline; }
 		.footer .muted { color: #71717a; }
 		.footer .sep { color: #3f3f46; }
-		.methodology {
-			background: rgba(63,63,70,0.4);
-			border: 1px solid #3f3f46;
-			border-radius: 8px;
-			padding: 1rem 1.25rem;
-			margin-bottom: 2rem;
-			font-size: 0.9rem;
-		}
-		.methodology strong { color: #e4e4e7; }
-		.methodology ol { margin: 0.5rem 0 0 1.25rem; padding: 0; color: #71717a; }
-		.methodology li { margin-bottom: 0.25rem; }
 		.start-here {
 			font-size: 0.9rem;
 			color: #a78bfa;
@@ -125,58 +114,106 @@
 			font-weight: 400;
 		}
 		.resources .step-num { color: #71717a; font-weight: 600; margin-right: 0.25rem; }
+		.hero {
+			margin: -1.5rem -1.25rem 1.5rem -1.25rem;
+			width: calc(100% + 2.5rem);
+			max-width: 100vw;
+			border-radius: 0;
+			overflow: hidden;
+		}
+		.hero img {
+			width: 100%;
+			height: auto;
+			max-height: 280px;
+			object-fit: cover;
+			display: block;
+		}
 	</style>
 </head>
 <body>
+	<div class="hero">
+		<img src="/premium/hero.png" alt="Premium: AI Keyword Tools — Keyword clustering, SERP analysis, prompt templates, priority lists" loading="eager">
+	</div>
 	<header class="site-header">
 		<a href="https://best-ai-tools-for-keyword-research-2025.xyz/">← Back to home</a>
 		<span class="badge">Unlocked</span>
 	</header>
 
-	<h1>Premium: <span class="accent">AI Keyword Tools</span></h1>
-	<p class="intro">This guide walks you through a repeatable keyword process: cluster keywords by intent with AI, analyze SERPs for each cluster, then score competition and prioritize what to write. Use the templates and prompts below in your own tools (ChatGPT, Claude, Notion, Sheets).</p>
+	<h1 style="margin:0 0 12px 0;">Premium: AI Keyword Tools</h1>
+	<p style="opacity:0.85; line-height:1.6; max-width:680px;">
+		This guide walks you through a repeatable keyword process: cluster keywords by intent with AI, analyze SERPs, score competition, and prioritize what to write.
+		Use the templates and prompts below in your own tools.
+	</p>
 
-	<div class="methodology">
-		<strong>Methodology</strong>
-		<ol>
-			<li><strong>Cluster</strong> -- Group keywords by intent (informational, commercial, transactional) and track them.</li>
-			<li><strong>SERP</strong> -- For each cluster, see what ranks and what content type wins.</li>
-			<li><strong>Score & prioritize</strong> -- Decide what to optimize or write first (difficulty, opportunity, priority).</li>
-			<li><strong>Map</strong> -- Tie clusters to your site (pillar pages, subpages, target URLs).</li>
-			<li><strong>Ship</strong> -- Use the prompt packs below in ChatGPT, Claude, or Gemini to create and optimize.</li>
+	<div style="background:#1f1f2e; border-radius:12px; padding:24px; margin:32px 0;">
+		<h3 style="margin-top:0; color:#a5b4fc;">Methodology</h3>
+		<ol style="padding-left:22px; line-height:1.85;">
+			<li><strong>Cluster</strong> — Group keywords by intent and track them.</li>
+			<li><strong>SERP</strong> — See what ranks and what content type wins.</li>
+			<li><strong>Score & prioritize</strong> — Decide what to optimize or write first.</li>
+			<li><strong>Map</strong> — Tie clusters to your site (pillar pages, subpages, target URLs).</li>
+			<li><strong>Ship</strong> — Use the prompt packs below to create and optimize.</li>
 		</ol>
-		<p style="margin:0.75rem 0 0;color:#71717a;font-size:0.85rem;">The core resources below support each step.</p>
 	</div>
 
 	<section class="section">
-		<h2 class="section-title">AI prompt packs (updates)</h2>
-		<p class="section-desc">New packs added for subscribers. Click to open and copy prompts into ChatGPT, Claude, or Gemini.</p>
-		<div id="packs-list" class="packs-list"></div>
+		<h2 class="section-title">What you get</h2>
+		<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; margin-top: 30px;">
+			<div style="background:#1e2937; border-radius:12px; padding:20px; text-align:center;">
+				<div style="font-size:48px; margin-bottom:12px;">🔍</div>
+				<strong>SERP &amp; Competition Analysis</strong>
+				<p style="font-size:14px; opacity:0.8; margin-top:8px;">Live SERP breakdowns + competitor scoring</p>
+			</div>
+			<div style="background:#1e2937; border-radius:12px; padding:20px; text-align:center;">
+				<div style="font-size:48px; margin-bottom:12px;">✍️</div>
+				<strong>AI Prompt Templates</strong>
+				<p style="font-size:14px; opacity:0.8; margin-top:8px;">Ready-to-use prompts for ChatGPT, Claude &amp; Gemini</p>
+			</div>
+			<div style="background:#1e2937; border-radius:12px; padding:20px; text-align:center;">
+				<div style="font-size:48px; margin-bottom:12px;">📋</div>
+				<strong>Notion &amp; Sheet Templates</strong>
+				<p style="font-size:14px; opacity:0.8; margin-top:8px;">Ready-to-use tracking &amp; mapping templates</p>
+			</div>
+			<div style="background:#1e2937; border-radius:12px; padding:20px; text-align:center;">
+				<div style="font-size:48px; margin-bottom:12px;">📊</div>
+				<strong>Priority List &amp; Workflow</strong>
+				<p style="font-size:14px; opacity:0.8; margin-top:8px;">Daily/weekly prioritized keyword lists</p>
+			</div>
+		</div>
 	</section>
-	<script>
-	(function() {
-		fetch('/premium/packs/index.json').then(function(r) { return r.ok ? r.json() : null; }).then(function(data) {
-			var list = document.getElementById('packs-list');
-			if (!list || !data || !data.packs || !data.packs.length) return;
-			var ul = document.createElement('ul');
-			ul.className = 'resources';
-			data.packs.forEach(function(pack) {
-				var li = document.createElement('li');
-				var a = document.createElement('a');
-				a.href = '/premium/packs/' + pack.slug + '.md';
-				a.textContent = pack.title + ' (' + pack.date + ')';
-				a.target = '_blank';
-				a.rel = 'noopener noreferrer';
-				li.appendChild(a);
-				if (pack.description) { li.appendChild(document.createTextNode(' — ' + pack.description)); }
-				ul.appendChild(li);
-			});
-			list.appendChild(ul);
-		});
-	})();
-	</script>
 
-	<section class="section">
+	<h3 style="margin:40px 0 20px 0; color:#a5b4fc;">More Resources</h3>
+	<details style="margin-bottom:20px;">
+		<summary style="cursor:pointer; font-weight:bold; color:#c4d0ff; padding:12px; background:#1f1f2e; border-radius:8px;">
+			Click to view AI prompt packs &amp; templates (updates)
+		</summary>
+		<div style="padding:20px; background:#1a1a2e; border-radius:8px; margin-top:8px;">
+			<p>New packs added for subscribers. Click to open and copy prompts into ChatGPT, Claude, or Gemini.</p>
+			<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); gap:20px; margin-top:20px;">
+				<a href="/premium/pack.html?slug=keyword-clustering-priority" target="_blank" rel="noopener noreferrer"
+					style="background:#1f1f2e; border-radius:12px; overflow:hidden; text-decoration:none; color:white; display:block;">
+					<img src="/premium/accordion-1.png" alt="Keyword Clustering" style="width:100%; height:160px; object-fit:cover;" loading="lazy">
+					<div style="padding:16px;">Keyword Clustering</div>
+				</a>
+				<a href="/premium/pack.html?slug=2026-02-ecommerce-serp" target="_blank" rel="noopener noreferrer"
+					style="background:#1f1f2e; border-radius:12px; overflow:hidden; text-decoration:none; color:white; display:block;">
+					<img src="/premium/accordion-2.png" alt="SERP Analysis" style="width:100%; height:160px; object-fit:cover;" loading="lazy">
+					<div style="padding:16px;">SERP Analysis</div>
+				</a>
+				<a href="/premium/pack.html?slug=content-brief-onpage" target="_blank" rel="noopener noreferrer"
+					style="background:#1f1f2e; border-radius:12px; overflow:hidden; text-decoration:none; color:white; display:block;">
+					<img src="/premium/accordion-3.png" alt="AI Prompt Templates" style="width:100%; height:160px; object-fit:cover;" loading="lazy">
+					<div style="padding:16px;">AI Prompt Templates</div>
+				</a>
+				<a href="/premium/#core-resources" style="background:#1f1f2e; border-radius:12px; overflow:hidden; text-decoration:none; color:white; display:block;">
+					<img src="/premium/accordion-4.png" alt="Priority Lists" style="width:100%; height:160px; object-fit:cover;" loading="lazy">
+					<div style="padding:16px;">Priority Lists</div>
+				</a>
+			</div>
+		</div>
+	</details>
+
+	<section class="section" id="core-resources">
 		<h2 class="section-title">Core resources</h2>
 		<p class="start-here"><strong>Start here:</strong> Run the keyword research prompt -&gt; add results to the Notion template -&gt; run the SERP brief for top-priority URLs -&gt; map clusters to your site with the Sheet.</p>
 		<p class="section-desc">Links below are in workflow order. Use each when you're on that step.</p>
