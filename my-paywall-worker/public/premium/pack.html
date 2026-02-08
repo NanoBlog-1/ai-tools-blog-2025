@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Prompt pack — Premium</title>
+	<style>
+		* { box-sizing: border-box; }
+		body {
+			font-family: system-ui, -apple-system, sans-serif;
+			max-width: 720px;
+			margin: 0 auto;
+			padding: 1.5rem 1.25rem 3rem;
+			background: #18181b;
+			color: #e4e4e7;
+			line-height: 1.65;
+			min-height: 100vh;
+		}
+		.pack-header {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 1rem;
+			margin-bottom: 2rem;
+			padding-bottom: 1rem;
+			border-bottom: 1px solid #3f3f46;
+		}
+		.pack-header a { color: #a78bfa; text-decoration: none; font-size: 0.9rem; }
+		.pack-header a:hover { text-decoration: underline; }
+		.pack-title {
+			color: #e4e4e7;
+			font-size: 1.5rem;
+			font-weight: 700;
+			margin: 0 0 0.25rem;
+			letter-spacing: -0.02em;
+		}
+		.pack-meta { color: #71717a; font-size: 0.875rem; }
+		#pack-content {
+			margin-top: 1.5rem;
+		}
+		/* Rendered markdown */
+		#pack-content h1 { font-size: 1.5rem; color: #e4e4e7; margin: 2rem 0 1rem; font-weight: 700; }
+		#pack-content h1:first-child { margin-top: 0; }
+		#pack-content h2 { font-size: 1.2rem; color: #a5b4fc; margin: 2rem 0 0.75rem; font-weight: 600; }
+		#pack-content h3 { font-size: 1.05rem; color: #e4e4e7; margin: 1.5rem 0 0.5rem; font-weight: 600; }
+		#pack-content p { margin: 0 0 1rem; color: #d4d4d8; }
+		#pack-content ul, #pack-content ol { margin: 0 0 1rem 1.25rem; color: #d4d4d8; }
+		#pack-content li { margin-bottom: 0.35rem; }
+		#pack-content a { color: #a78bfa; text-decoration: none; }
+		#pack-content a:hover { text-decoration: underline; }
+		#pack-content strong { color: #e4e4e7; font-weight: 600; }
+		#pack-content hr { border: none; border-top: 1px solid #3f3f46; margin: 2rem 0; }
+		#pack-content pre {
+			background: #1f1f2e;
+			border: 1px solid #3f3f46;
+			border-radius: 8px;
+			padding: 1rem 1.25rem;
+			overflow-x: auto;
+			margin: 1rem 0;
+			font-size: 0.875rem;
+			line-height: 1.5;
+			color: #e4e4e7;
+		}
+		#pack-content code { font-family: ui-monospace, monospace; font-size: 0.9em; }
+		#pack-content pre code { background: none; padding: 0; color: inherit; }
+		#pack-content :not(pre) > code {
+			background: rgba(63,63,70,0.6);
+			padding: 0.2em 0.4em;
+			border-radius: 4px;
+			color: #a5b4fc;
+			font-size: 0.9em;
+		}
+		#pack-content blockquote {
+			border-left: 3px solid #71717a;
+			margin: 1rem 0;
+			padding-left: 1rem;
+			color: #a1a1aa;
+			font-style: italic;
+		}
+		.pack-loading { color: #71717a; }
+		.pack-error { color: #f87171; }
+	</style>
+</head>
+<body>
+	<header class="pack-header">
+		<a href="/premium/">← Back to Premium</a>
+	</header>
+	<h1 class="pack-title" id="pack-title">Prompt pack</h1>
+	<p class="pack-meta" id="pack-meta"></p>
+	<div id="pack-content">
+		<p class="pack-loading">Loading…</p>
+	</div>
+	<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+	<script>
+	(function() {
+		var params = new URLSearchParams(location.search);
+		var slug = params.get('slug');
+		var contentEl = document.getElementById('pack-content');
+		var titleEl = document.getElementById('pack-title');
+		var metaEl = document.getElementById('pack-meta');
+
+		if (!slug) {
+			contentEl.innerHTML = '<p class="pack-error">Missing pack. Use ?slug=... (e.g. pack.html?slug=2026-02-ecommerce-serp)</p>';
+			return;
+		}
+
+		fetch('/premium/packs/' + slug + '.md')
+			.then(function(r) {
+				if (!r.ok) throw new Error('Pack not found');
+				return r.text();
+			})
+			.then(function(raw) {
+				var body = raw;
+				var title = 'Prompt pack';
+				var date = '';
+
+				// Strip YAML frontmatter and read title/date
+				var fmMatch = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n/);
+				if (fmMatch) {
+					body = raw.slice(fmMatch[0].length);
+					var fm = fmMatch[1];
+					var t = fm.match(/title:\s*["']?([^"'\n]+)["']?/);
+					if (t) title = t[1].trim();
+					var d = fm.match(/date:\s*["']?([^"'\n]+)["']?/);
+					if (d) date = d[1].trim();
+				}
+
+				titleEl.textContent = title;
+				metaEl.textContent = date ? 'Pack · ' + date : '';
+
+				if (typeof marked !== 'undefined') {
+					marked.setOptions({ gfm: true, breaks: true });
+					contentEl.innerHTML = marked.parse(body);
+				} else {
+					contentEl.textContent = body;
+				}
+			})
+			.catch(function(err) {
+				contentEl.innerHTML = '<p class="pack-error">Could not load this pack. It may not exist or you may need to be signed in to Premium.</p>';
+			});
+	})();
+	</script>
+</body>
+</html>
