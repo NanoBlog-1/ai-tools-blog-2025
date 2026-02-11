@@ -45,7 +45,6 @@
             --accent-border: rgba(255, 255, 255, 0.12);
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        #headerPayCard, #headerPaySol, #headerPaySub { min-width: 240px !important; padding: 19px 34px !important; font-size: 1.2rem !important; border-radius: 12px !important; }
         .pay-button {
             padding: 22px 40px !important;
             font-size: 19px !important;
@@ -140,7 +139,7 @@
             .container { padding: 32px 40px; }
         }
         header {
-            text-align: center;
+            text-align: left;
             margin-bottom: 28px;
             padding: 0 0 24px;
         }
@@ -153,7 +152,7 @@
             margin-bottom: 0.75rem;
             color: var(--text);
         }
-        header p { color: var(--muted); font-size: 1rem; line-height: 1.6; max-width: 30em; margin-left: auto; margin-right: auto; }
+        header p { color: var(--muted); font-size: 1rem; line-height: 1.6; max-width: 30em; }
         .hero-sub { font-size: 1.125rem; color: var(--electric); font-weight: 600; line-height: 1.5; margin-top: 0.35rem; letter-spacing: -0.01em; }
         .hero-banner {
             width: 100%;
@@ -684,20 +683,6 @@
                     <li><strong>Prioritize, then ship</strong> — Score difficulty and opportunity, then tackle the highest-impact items first.</li>
                 </ul>
             </div>
-            <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin: 32px 0 40px 0; padding: 0 20px;">
-                <!-- $2 Card / Apple Pay -->
-                <a id="headerPayCard" href="#" style="background:#3b82f6; color:white; font-weight:bold; text-decoration:none; text-align:center; box-shadow: 0 4px 12px rgba(59,130,246,0.3);">
-                    $2 (card or Apple Pay)
-                </a>
-                <!-- $1.50 Solana -->
-                <a id="headerPaySol" href="#" style="background:#10b981; color:white; font-weight:bold; text-decoration:none; text-align:center; box-shadow: 0 4px 12px rgba(16,185,129,0.3);">
-                    ~$1.50 (Solana)
-                </a>
-                <!-- $5/mo Subscription -->
-                <a id="headerPaySub" href="#" style="background:#8b5cf6; color:white; font-weight:bold; text-decoration:none; text-align:center; box-shadow: 0 4px 12px rgba(139,92,246,0.3);">
-                    $5/mo — AI updates
-                </a>
-            </div>
         </header>
 
         <div class="section-with-img section-with-img--img-right">
@@ -994,12 +979,6 @@
         if (payFiatLink) payFiatLink.href = PAYWALL_URL;
         var paySubLink = document.getElementById('paySubLink');
         if (paySubLink) paySubLink.href = PAYWALL_URL;
-        var headerPayCard = document.getElementById('headerPayCard');
-        if (headerPayCard) headerPayCard.href = PAYWALL_URL;
-        var headerPaySol = document.getElementById('headerPaySol');
-        if (headerPaySol) headerPaySol.addEventListener('click', function(e) { e.preventDefault(); payButton.click(); });
-        var headerPaySub = document.getElementById('headerPaySub');
-        if (headerPaySub) headerPaySub.href = PAYWALL_URL;
         var payFiatSticky = document.getElementById('payFiatLinkSticky');
         if (payFiatSticky) payFiatSticky.href = PAYWALL_URL;
         var pl = document.getElementById('privacyLink');
