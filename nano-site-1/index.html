@@ -118,6 +118,24 @@
             margin: 0 auto;
             padding: 24px 20px;
         }
+        .site-nav {
+            padding: 1rem 0 1rem 0;
+            margin-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.9375rem;
+        }
+        .site-nav a { color: var(--electric); text-decoration: none; margin-right: 1.25rem; }
+        .site-nav a:hover { text-decoration: underline; }
+        .free-takeaways {
+            background: var(--bg-mid);
+            border-radius: 10px;
+            padding: 1.25rem 1.5rem;
+            margin: 24px 0 32px 0;
+            border: 1px solid var(--border);
+        }
+        .free-takeaways h3 { font-size: 1rem; font-weight: 600; color: var(--text); margin-bottom: 0.75rem; }
+        .free-takeaways ul { margin: 0 0 0 1.25rem; color: var(--muted); font-size: 0.9375rem; line-height: 1.6; }
+        .free-takeaways li { margin-bottom: 0.35rem; }
         @media (min-width: 768px) {
             .container { padding: 32px 40px; }
         }
@@ -643,6 +661,12 @@
             </div>
         </aside>
         <div class="container">
+        <nav class="site-nav" aria-label="Main">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="guide.html">Guide</a>
+            <a href="https://best-ai-tools-for-keyword-research-2025.xyz/privacy" target="_blank" rel="noopener noreferrer">Privacy</a>
+        </nav>
         <div class="hero-banner">
             <img src="hero.png" width="1200" height="320" alt="AI-driven SEO: data analytics, keyword rankings, and SEO insights dashboard" class="tool-screenshot" fetchpriority="high">
         </div>
@@ -652,6 +676,14 @@
             <p class="hero-sub">E‑commerce product pages. Blog and content marketing. Same problem everywhere: more AI content, harder to stand out.</p>
             <p>A clear keyword workflow + templates that work in any market. Pay once — Solana or card.</p>
             <p class="tagline-strip"><span>One workflow</span> · <span>Any market</span> · <span>No $200/mo tools</span></p>
+            <div class="free-takeaways">
+                <h3>Free takeaways</h3>
+                <ul>
+                    <li><strong>Cluster by intent</strong> — Group keywords into informational, commercial, and transactional so you know what content type to create.</li>
+                    <li><strong>Check the SERP first</strong> — See what’s ranking before you write; match the format and gaps that Google rewards.</li>
+                    <li><strong>Prioritize, then ship</strong> — Score difficulty and opportunity, then tackle the highest-impact items first.</li>
+                </ul>
+            </div>
             <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin: 32px 0 40px 0; padding: 0 20px;">
                 <!-- $2 Card / Apple Pay -->
                 <a id="headerPayCard" href="#" style="background:#3b82f6; color:white; font-weight:bold; text-decoration:none; text-align:center; box-shadow: 0 4px 12px rgba(59,130,246,0.3);">
@@ -860,7 +892,7 @@
         </div>
 
         <footer class="page-footer">
-            <a href="about.html">About</a> · <a href="#" id="privacyLinkFooter">Privacy &amp; security</a> · One-time ~$1.50 SOL / $2 · $5/mo for AI updates
+            <a href="about.html">About</a> · <a href="guide.html">Guide</a> · <a href="#" id="privacyLinkFooter">Privacy</a> · One-time ~$1.50 SOL / $2 · $5/mo for AI updates
         </footer>
         </div>
         <aside class="sidebar sidebar-right" aria-label="Advertising">
